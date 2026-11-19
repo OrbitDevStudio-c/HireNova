@@ -1,68 +1,78 @@
-# RecruitIQ — AI Recruitment Platform
+# RecruitIQ — AI Hiring Platform
 
-An AI-powered recruitment platform for recruitment agencies. An agency posts jobs (optionally on behalf of
-a client company), candidates apply with a resume — logged in, or as a guest through a public careers
-portal — and an AI pipeline parses resumes, extracts structured job requirements, and scores/ranks
-candidates against each job. Shortlisted candidates take a fully automated AI voice interview (booked from
-slots, or via an instant "attend now or later" link), get a final score, and qualified candidates are
-submitted to the company's HR person, who reviews them in a read-only link or their own portal.
+An AI-powered hiring platform with three sides:
 
-**Naming:** the UI, emails and messages say **Portal Admin**, **Agency** (the recruitment company, its
-owner and agency recruiters), **Company** (the agency's client) and **Company HR**. Code identifiers,
-routes, enums and permission keys keep the older names — e.g. the agency is `Company` / role `COMPANY`,
-the client company is `ClientCompany` (`/clients`), and Company HR is `HiringPerson` / role `CLIENT_HR`.
+- **Platform Admin** — runs the platform: a dashboard of companies joined, students, jobs posted,
+  applications and which fields are booming, plus control over every company and student account.
+- **Companies** — register themselves, post jobs and hire. The person who registers is the company
+  **Admin**, who adds **HR** and **Employees** and decides exactly what each one may do.
+- **Students** — sign up, upload a resume, see how well they fit every open job from every company,
+  apply, and take an AI voice interview when shortlisted.
 
-Want to see every role quickly? Run `node scripts/seed-demo.mjs` and open `/live-demo` — see
+Under the hood an AI pipeline parses resumes, extracts structured job requirements and scores/ranks
+applicants; shortlisted students take a fully automated AI voice interview and get a final score.
+
+**Naming:** the UI says **Platform admin**, **Company admin**, **HR**, **Employee** and **Student**. Code
+keeps older identifiers: the company admin is user role `COMPANY`, HR and employees are user role
+`RECRUITER` with a `CompanyMember.role` of `HR` / `EMPLOYEE`, students are role `CANDIDATE`, and the team
+API lives under `/recruiters`. The agency-era pieces (client companies, CV pool, `/recq` links, client HR
+portal) are still in the code but hidden from the navigation.
+
+Want to see every role quickly? Run `npm run db:seed:demo` and open `/live-demo` — see
 [Live demo page](#live-demo-page).
 
 ## What it does
 
-**Portal Admin:** onboards agencies (invite link to set the owner's password), suspends/activates
-agencies, manages users.
+**Platform Admin:** `/admin/dashboard` — totals, growth in the last 30 days, 6-month trends (companies,
+students, jobs, applications), booming fields (industries by jobs posted, with growth vs the previous 30
+days), most in-demand skills vs top student skills, most-applied jobs and newest companies.
+`/admin/companies` — add, edit, suspend / reactivate companies. `/admin/students` — search students,
+see their activity, activate / deactivate. `/admin/users` — every login.
 
-**Agency (owner + agency recruiters):** post a job (AI extracts structured requirements) → link it to a
-company and its Company HR (department optional) → review applicants → run AI screening → filter/sort by
-score, experience, skills, education, status → shortlist or reject (in bulk, or automatically on the
-score) → AI interview via booked slots or an instant link → final score (CV + interview) → submit
-qualified candidates to the company. Owners invite recruiters with granular permissions and job/company
-assignments.
+**Company Admin:** registers at `/auth/register/company` → posts jobs (AI extracts structured
+requirements) → reviews applicants, runs AI screening, shortlists / rejects → AI interviews → final score.
+On **Team** (`/company/team`) adds HR and Employees with per-person permissions.
 
-**Candidate:** register (or apply as a guest with phone OTP) → build a profile (resume upload auto-fills
-academic fields, reviewed before saving) → apply → track status → book an interview slot or open an
-interview link → take the AI voice interview. Candidates **without a login** get a personal status link
-in every email: it shows a progress timeline and lets them book, change and join their slot interview
-(see [Notifications & interview scheduling](#notifications--interview-scheduling-phase-2)).
+**HR / Employee:** same company area, limited to the permissions their Admin ticked. Every member sees all
+of the company's jobs; what they can *do* is set by permissions.
 
-**Company HR:** receives submitted candidate packages by email (private read-only link), or logs into the
-client portal to see every candidate submitted to them (scores, interview summary and CV, view only).
+**Student:** signs up at `/auth/register/student` → uploads a resume (auto-fills the profile) →
+**Find jobs** (`/candidate/jobs`) lists every company's open jobs with a quick fit score →
+**Check my fit** runs the AI review (strengths, gaps, skills to build) → apply → track status → book or
+open the AI interview → take it.
 
 **Screening engine:** deterministic checks (skill overlap, experience range, education match) blended
 with an LLM's semantic read of the resume — the LLM is never the sole source of truth, and gender/name/
-other demographic data is never sent to it (see [AI & screening](#ai--screening)).
+other demographic data is never sent to it (see [AI & screening](#ai--screening)). The student job board's
+quick fit uses only the deterministic part (no AI call); **Check my fit** uses the full engine and is a
+private preview — nothing is saved or shown to the company.
 
 ## Roles
 
-| Role (code)   | Shown as         | Who                                               | Lands on               |
-| ------------- | ---------------- | ------------------------------------------------- | ---------------------- |
-| `ADMIN`       | Portal Admin     | Created by script only                            | `/admin/companies`     |
-| `COMPANY`     | Agency owner     | Owns the agency — every permission                | `/company/dashboard`   |
-| `RECRUITER`   | Agency recruiter | Invited by the owner — permissions + assigned jobs/companies only | `/company/dashboard` |
-| `CANDIDATE`   | Candidate        | Job seeker (registered or guest)                  | `/candidate/dashboard` |
-| `CLIENT_HR`   | Company HR       | HR / hiring person at the agency's client company | `/client/candidates`   |
+| Role (code)  | Member role   | Shown as        | Who                                   | Lands on               |
+| ------------ | ------------- | --------------- | ------------------------------------- | ---------------------- |
+| `ADMIN`      | —             | Platform admin  | Created by `scripts/create-admin.mjs` | `/admin/dashboard`     |
+| `COMPANY`    | `OWNER`       | Company admin   | Registered the company — every permission | `/company/dashboard` |
+| `RECRUITER`  | `HR`          | HR              | Added by the company admin            | `/company/dashboard`   |
+| `RECRUITER`  | `EMPLOYEE`    | Employee        | Added by the company admin            | `/company/dashboard`   |
+| `CANDIDATE`  | —             | Student         | Signs up                              | `/candidate/dashboard` |
 
-Recruiter permissions (`src/shared/constants/permissions.js`): `MANAGE_JOBS`, `VIEW_CANDIDATES`,
-`REVIEW_CANDIDATES`, `CONFIGURE_INTERVIEWS`, `MANAGE_RECRUITERS`, `MANAGE_CLIENTS`, `SUBMIT_CANDIDATES`.
-Recruiters only see jobs assigned to them, jobs they created, and jobs of companies assigned to them
-(`403 JOB_NOT_ASSIGNED` otherwise).
+Permissions (`src/shared/constants/permissions.js`), ticked per person on the Team page:
 
-- **View-only by default.** New recruiters get only `VIEW_CANDIDATES`: applicants on their jobs, scores,
-  interview results and the CV (view / download), with every action button hidden. Recruiters created
-  before this kept their existing permissions.
-- Read routes accept `VIEW_CANDIDATES` or `REVIEW_CANDIDATES` (`requireAnyPermission`); every action
-  (screening, shortlist/reject, second round, …) still needs `REVIEW_CANDIDATES`.
+| Key                    | Allows                                                    | HR preset | Employee preset |
+| ---------------------- | --------------------------------------------------------- | :-------: | :-------------: |
+| `VIEW_CANDIDATES`      | See applicants, CVs, fit scores, interview results         | ✓ | ✓ |
+| `JOB_CREATE`           | Post new jobs                                              | ✓ |   |
+| `JOB_EDIT`             | Change job details and settings                            | ✓ |   |
+| `JOB_DELETE`           | Close a job, or delete one with no applicants             |   |   |
+| `REVIEW_CANDIDATES`    | Run AI screening, shortlist / reject                       | ✓ |   |
+| `CONFIGURE_INTERVIEWS` | AI interviewer settings, slots and links (with `JOB_EDIT`) | ✓ |   |
+| `MANAGE_RECRUITERS`    | Manage team — add HR / employees, set permissions          |   |   |
 
-Company HR belong directly to a company (the company page has a **Company HR** tab); the department is an
-optional label. On a job, Company HR is picked by company.
+The preset is only a starting point — the admin can tick or untick any box. Legacy `MANAGE_JOBS` (from
+the agency era) is treated as `JOB_CREATE` + `JOB_EDIT` + `JOB_DELETE` (`expandPermissions`). Nobody can
+change their own access or the company admin's. A job with applicants can't be deleted — only closed —
+so students' applications are never lost.
 
 ## Application pipeline
 
@@ -262,48 +272,48 @@ Everything else has a safe default — see the comments in `.env.example`:
 | Email | `BREVO_API_KEY`, `BREVO_FROM_EMAIL`, `BREVO_FROM_NAME`, `EMAIL_PROVIDER` |
 | AI voice interviews | `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `INTERVIEW_WORKER_SECRET`, `DEEPGRAM_API_KEY` |
 | SMS OTP | `SMS_DRIVER` (`console` / `twilio`), `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`, `DEFAULT_PHONE_COUNTRY_CODE` (`+91`) |
-| Feature flags | `ALLOW_COMPANY_SELF_REGISTER` (default `true`), `FEATURE_GUEST_APPLY`, `FEATURE_INSTANT_INTERVIEW`, `FEATURE_CLIENT_PORTAL` (default `false`) |
+| Feature flags | `ALLOW_COMPANY_SELF_REGISTER`, `FEATURE_CANDIDATE_JOB_BOARD` (both default `true`), `FEATURE_GUEST_APPLY`, `FEATURE_INSTANT_INTERVIEW`, `FEATURE_CLIENT_PORTAL` (default `false`) |
 | Demo page | `DEMO_PAGE` (default `false`), `DEMO_PASSWORD` (default `Demo@123`) |
 
-Feature flags accept `true`/`false` (also `1`/`0`, `yes`/`no`, `on`/`off`). Set
-`ALLOW_COMPANY_SELF_REGISTER=false` once a Portal Admin exists — agencies can then only be onboarded by
-the admin. With `SMS_DRIVER=console`, OTP codes print in the API server's terminal.
+Feature flags accept `true`/`false` (also `1`/`0`, `yes`/`no`, `on`/`off`). Companies register
+themselves and students browse every company's jobs by default; set `ALLOW_COMPANY_SELF_REGISTER=false`
+to let only the Platform Admin add companies. `FEATURE_CANDIDATE_JOB_BOARD=false` turns off the student
+job board and logged-in applying. With `SMS_DRIVER=console`, OTP codes print in the API server's terminal.
 
 To run AI voice interviews you also need the `LIVEKIT_*` values, `INTERVIEW_WORKER_SECRET` (any long
 random string, matched in `livekit-worker/.env`), and `livekit-worker/` running separately.
 
 ## Live demo page
 
-`/live-demo` (`/start` redirects to it, and the landing page links to it) lists every role with what it
-can do, plus the public links: the demo agency's careers page, CV-only submission, application tracking
-and registration. It works off fixed demo accounts on the
-non-routable `@recruitiq.demo` domain (`src/shared/constants/demo.js`), so no real inbox ever gets their
-emails:
+`/live-demo` (`/start` redirects to it; the landing page links to it) lists every role with what it can
+do, its login, sign-up links and sample resumes. Demo accounts live on non-routable `.demo` domains
+(`src/shared/constants/demo.js`), so no real inbox ever gets their emails:
 
 | Account | Email |
 | ------- | ----- |
-| Portal Admin | `admin@recruitiq.demo` |
-| Agency owner | `agency@recruitiq.demo` |
-| Agency recruiter | `recruiter@recruitiq.demo` |
-| Company HR | `hr@recruitiq.demo` |
-| Candidate | `candidate@recruitiq.demo` |
+| Platform admin | `admin@platform.demo` |
+| Company admin (Finlytics Software) | `admin@finlytics.demo` |
+| HR (Finlytics) | `hr@finlytics.demo` |
+| Employee (Finlytics, read only) | `employee@finlytics.demo` |
+| Student | `kavya@students.demo` |
+| Second company admin (Medivance Health) | `admin@medivance.demo` |
 
 ```bash
 node scripts/backup-db.mjs before-demo   # it writes to DATABASE_URL — back up first
-node scripts/seed-demo.mjs               # create the demo set (skips if it already exists)
-node scripts/seed-demo.mjs --reset       # delete the demo set first, then recreate it
+npm run db:seed:demo                     # create the demo set (skips if it already exists)
+node scripts/seed-hiring-demo.mjs --reset   # delete the demo set first, then recreate it
 ```
 
-The seed goes through the app's real flows on its own API instance (port 3093, needed features on, console
-email): **Demo Talent Agency** with its careers link, **Demo Software Pvt Ltd** with an Engineering
-department and its Company HR, an agency recruiter, the open job **Frontend Developer (Demo)**, a candidate
-with a profile and CV who hasn't applied yet (so you can apply live), and one sample candidate already
-submitted to Company HR.
+The seed (`scripts/seed-hiring-demo.mjs`, data in `scripts/lib/hiringDemoData.mjs`) writes straight
+through Prisma — no running API and no AI key needed: 3 companies in different industries with their
+admins, HR and employees, 7 open jobs spread over the last 6 months, and 9 students with real `.docx`
+resumes and applications scored by the deterministic fit (marked `aiModel: 'demo-deterministic'`).
+`node scripts/seed-demo.mjs` runs the same seed. The older agency-flow demo is still available as
+`scripts/seed-recq-demo.mjs`.
 
-The demo emails and password are only shown on the page while `DEMO_PAGE=true`. With it off, the page still
-lists the roles and links. All demo accounts share `DEMO_PASSWORD`. `DEMO_PAGE=true` publishes working
-demo logins to anyone who opens the page, so only turn it on where that's intended (it never exposes real
-accounts).
+The demo emails and password are only shown on the page while `DEMO_PAGE=true`. All demo accounts share
+`DEMO_PASSWORD` (default `Demo@123`). `DEMO_PAGE=true` publishes working demo logins to anyone who opens
+the page, so only turn it on where that's intended (it never exposes real accounts).
 
 ## Local setup
 

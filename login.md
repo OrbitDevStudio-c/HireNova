@@ -1,134 +1,34 @@
-# RecruitIQ — Demo logins and data
+# Demo logins
 
-Demo dataset for the **RecQ agency-link flow**, created by `node scripts/seed-recq-demo.mjs`
-(also `node scripts/seed-demo.mjs`). Everything is fictional and every account is on a
-non-routable `.demo` domain — no real inbox receives anything.
+Created by `npm run db:seed:demo` (`scripts/seed-hiring-demo.mjs`). All accounts are fictional and on
+`.demo` domains, so no real inbox receives their emails.
 
-- **Password for every account:** `Demo@123` (the `DEMO_PASSWORD` value used when seeding — the default).
-  The set includes a real **Portal Admin**: if you seed it on a shared or live database, use a
-  different, strong `DEMO_PASSWORD` and update this file.
-- **Sign in:** `/auth/login`. There is **no sign-up** — agencies are added by the Portal Admin.
-- **Where these logins work:** the **live site** `https://recruitiq-eta.vercel.app` and the local demo
-  environment (`http://localhost:5173`). Both were seeded with this set.
-- **Exception — Portal Admin on the live site:** `admin@platform.demo` has its own strong password there
-  (not `Demo@123`, because the admin sees every real agency). It was shared directly — it is not stored in
-  this repository. Locally the admin uses `Demo@123`.
+- **Password for every account:** the `DEMO_PASSWORD` value used when seeding (default `Demo@123`).
+  On any shared or public deployment, seed with a different, strong `DEMO_PASSWORD`.
 - Overview of every role and link: **`/live-demo`** (shows the password only when `DEMO_PAGE=true`).
+- Open each role in a separate browser window or incognito window so the logins don't replace each other.
 
----
+| Role | Email | Lands on | What to try |
+| --- | --- | --- | --- |
+| Platform admin | `admin@platform.demo` | `/admin/dashboard` | Dashboard trends and booming fields; Students → deactivate one |
+| Company admin — Finlytics Software (Fintech) | `admin@finlytics.demo` | `/company/dashboard` | Team → edit permissions, switch HR ↔ Employee; delete a job with no applicants |
+| HR — Finlytics | `hr@finlytics.demo` | `/company/dashboard` | Create / edit jobs, review applicants — no Delete button |
+| HR (review only) — Finlytics | `hr2@finlytics.demo` | `/company/dashboard` | Can review applicants but not create or edit jobs |
+| Employee — Finlytics | `employee@finlytics.demo` | `/company/dashboard` | Read only — no create / edit / delete / review buttons |
+| Company admin — Medivance Health (Healthcare) | `admin@medivance.demo` | `/company/dashboard` | A separate company — never sees Finlytics data |
+| Company admin — GreenGrid Energy (Renewable Energy) | `admin@greengrid.demo` | `/company/dashboard` | Newest company |
+| Student — Kavya Reddy (MERN) | `kavya@students.demo` | `/candidate/dashboard` | Find jobs → MERN Stack Developer shows a high fit → Check my fit → Apply |
+| Student — Aditya Rao (support) | `aditya@students.demo` | `/candidate/dashboard` | Developer jobs show a low fit |
 
-## Accounts
+More students: `aman@`, `priya@`, `rahul@`, `sneha@`, `farhan@`, `meera@`, `nikhil@` — all `@students.demo`.
 
-| Role | Email | Password | Lands on | Notes |
-| --- | --- | --- | --- | --- |
-| Portal Admin | `admin@platform.demo` | `Demo@123` (local) · live: separate password | `/admin/companies` | Adds / suspends agencies, sees all users |
-| Agency owner — **Nexora Talent Partners** | `owner@nexora.demo` | `Demo@123` | `/company/dashboard` | All jobs, companies, recruiters |
-| Agency recruiter — Ritika Bansal | `recruiter@nexora.demo` | `Demo@123` | `/company/dashboard` | Assigned to MERN, Backend, React + client Finlytics (so also sees AI/ML); not the Data Analyst job |
-| Company HR — Kunal Shah, **Finlytics Software Pvt Ltd** | `hr@finlytics.demo` | `Demo@123` | `/client/candidates` | Sees only candidates submitted to them |
-| Second agency — **Brightline Staffing** | `owner@brightline.demo` | `Demo@123` | `/company/dashboard` | Isolation check: never sees Nexora data |
-
-Recruiter permissions: view candidates, review candidates, configure interviews, manage jobs,
-submit candidates.
-
-Candidates have **no login** — they use the `/recq` links below.
-
----
-
-## Candidate links (no login)
-
-| Link | Shows |
-| --- | --- |
-| `/recq/nexora` | Nexora's 5 open roles + "Not sure which role fits?" resume discovery |
-| `/recq/nexora/mern-stack-developer` | One job: upload resume → match → email code → interview |
-| `/recq/nexora/backend-nodejs-developer` | Backend Node.js Developer |
-| `/recq/nexora/react-developer` | React Developer |
-| `/recq/nexora/ai-ml-engineer` | AI/ML Engineer |
-| `/recq/nexora/data-analyst-intern` | Data Analyst Intern — interview window opens in 3 days |
-| `/recq/nexora/php-laravel-developer` | **Closed** → "no longer accepting applications" |
-| `/recq/nexora/qa-automation-engineer` | **Closed** |
-| `/recq/brightline` | Brightline's 2 jobs only |
-| `/recq/brightline/mern-stack-developer` | Wrong agency + job → rejected |
-| `/careers/nexora` | Old careers link → redirects to `/recq/nexora` |
-
-Sample resumes to upload: `/sample-resumes/Kavya_Reddy_FullStack_Resume.docx` (strong, matches
-several roles) and `/sample-resumes/Aditya_Rao_Resume.docx` (customer support — stops at the match).
-The verification code goes to the email on the resume; with email in console mode (demo) the
-verification screen shows a dev code outside production, and the server log prints it.
-
----
-
-## Jobs — Nexora Talent Partners
-
-| Job | Location · type | Experience | Min. resume match | AI interviewer | Questions · answer time | Interview window | Final threshold |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| MERN Stack Developer | Pune · Full-time · Hybrid | 2–5 yrs | 65% | Ananya, Senior Technical Recruiter | 6 · 90 s | opened 8 days ago → +14 days | 70 (client: Finlytics) |
-| Backend Node.js Developer | Bengaluru · Full-time · On-site | 3–6 yrs | 65% | Vikram, Engineering Manager | 6 · 120 s | none (link valid 7 days) | 70 (client: Finlytics) |
-| React Developer | Remote · Contract | 1–3 yrs | 60% | Priya, Virtual HR | 5 · 60 s | opened 8 days ago → +7 days | none (recruiter decides) |
-| AI/ML Engineer | Hyderabad · Full-time · Hybrid | 2–5 yrs | 70% | Kavya, ML Lead | 7 · 120 s | opened 8 days ago → +10 days | 75 (client: Finlytics) |
-| Data Analyst Intern | Ahmedabad · Internship · On-site | 0–1 yr | 55% | Priya, Campus Recruiter | 4 · 60 s | **opens in 3 days** → +10 days | none |
-| PHP Laravel Developer | Pune | — | — | — | — | — | **CLOSED** |
-| QA Automation Engineer | Pune | — | — | — | — | — | **CLOSED** |
-
-Every job has its own custom questions, interview instructions, evaluation criteria and focus
-skills (Interviews tab). Final score = CV match × 30% + interview × 70%.
-
-Brightline Staffing: **Java Spring Boot Developer** (Chennai) and **DevOps Engineer** (Gurugram).
-
----
-
-## Candidates (seeded through the real flow)
-
-Each one uploaded a resume → AI match → verified the resume email → applied. The four completed
-interviews were run through the real AI interview engine; their dates are spread over the past week.
-
-| Candidate | Email | Applied to | Resume match | Interview | Final | Status |
-| --- | --- | --- | --- | --- | --- | --- |
-| Priya Sharma | `priya.sharma@mail.demo` | MERN Stack Developer *(via discovery)* | 91 | Completed · 92 | 91.7 | **Submitted to Company HR** (selected) |
-| | | React Developer *(same upload)* | 63 | Pending | — | Interview scheduled |
-| Arjun Verma | `arjun.verma@mail.demo` | Backend Node.js Developer | 100 | Completed · 90 | 93 | **Qualified** |
-| Sneha Kulkarni | `sneha.kulkarni@mail.demo` | React Developer | 82 | Completed · 68 | 72.2 | Interview completed — needs review |
-| Karan Malhotra | `karan.malhotra@mail.demo` | Backend Node.js Developer | 76 | Completed · 20 (tab-switch flag) | 36.8 | **Rejected** |
-| Fatima Sheikh | `fatima.sheikh@mail.demo` | MERN *(discovery)* + Backend | 90 · 79 | Pending (2 interviews) | — | Interview scheduled |
-| Ananya Iyer | `ananya.iyer@mail.demo` | AI/ML Engineer | 100 | Pending | — | Interview scheduled |
-| Meera Nair | `meera.nair@mail.demo` | React Developer | 90 | Pending | — | Interview scheduled |
-| Rahul Deshmukh | `rahul.deshmukh@mail.demo` | MERN Stack Developer | 84 | Pending | — | Interview scheduled |
-| Ishita Banerjee | `ishita.banerjee@mail.demo` | React Developer | 81 | Pending | — | Interview scheduled |
-| Vikram Joshi | `vikram.joshi@mail.demo` | MERN Stack Developer | 78 | Pending | — | Interview scheduled |
-| Rohit Patil | `rohit.patil@mail.demo` | Data Analyst Intern | 66 | **Not available yet** (window opens in 3 days) | — | Interview scheduled |
-| Neha Gupta | `neha.gupta@mail.demo` | Brightline · Java Spring Boot Developer | 84 | Pending | — | Interview scheduled |
-| Siddharth Menon | `siddharth.menon@mail.demo` | Brightline · DevOps Engineer | 92 | Pending | — | Interview scheduled |
-
-**More applicants** (interview pending — they give every job a fuller list):
-
-| Candidate | Email | Applied to |
-| --- | --- | --- |
-| Nikhil Bhosale | `nikhil.bhosale@mail.demo` | MERN Stack Developer |
-| Pooja Iyengar | `pooja.iyengar@mail.demo` | MERN Stack Developer |
-| Amit Chauhan | `amit.chauhan@mail.demo` | Backend Node.js Developer |
-| Divya Menon | `divya.menon@mail.demo` | Backend Node.js Developer |
-| Sanya Kapoor | `sanya.kapoor@mail.demo` | React Developer |
-| Harsh Vardhan | `harsh.vardhan@mail.demo` | AI/ML Engineer |
-| Riya Jain | `riya.jain@mail.demo` | AI/ML Engineer |
-| Aakash Pandey | `aakash.pandey@mail.demo` | Data Analyst Intern (window opens in 3 days) |
-| Kritika Sharma | `kritika.sharma@mail.demo` | Data Analyst Intern (window opens in 3 days) |
-
-Match scores come from the AI each time the seed runs, so the live site and the local demo can differ
-by a few points (the tables above are from the local seed).
-
-**Live-demo candidate (not seeded):** Kavya Reddy, `kavya.reddy@mail.demo` — upload
-`Kavya_Reddy_FullStack_Resume.docx` on `/recq/nexora` → "Find my matches" → MERN, Backend and
-React are eligible → one interview link per role.
-
----
-
-## Recreate the data
+## Reset
 
 ```bash
-node scripts/seed-recq-demo.mjs --reset   # removes only the .demo demo set, then recreates it (~10 min)
-node scripts/seed-recq-demo.mjs --extra   # only adds the "more applicants" to an existing demo set
-# separate Portal Admin password (e.g. live): RECQ_ADMIN_PASSWORD=... node scripts/seed-recq-demo.mjs --yes
+node scripts/backup-db.mjs before-demo        # back up first — it writes to DATABASE_URL
+node scripts/seed-hiring-demo.mjs --reset     # remove the demo set and recreate it
+# add --yes for a non-local (dedicated demo) database — never production
 ```
 
-The seed refuses a non-local `DATABASE_URL` unless `--yes` is given — use that only for a dedicated
-demo database, and back it up first (`node scripts/backup-db.mjs before-demo`). `--reset` also
-removes the earlier demo set on the `@recruitiq.demo` domain.
+Sign up as someone new at `/auth/register/student` or `/auth/register/company`; sample resumes are on
+`/live-demo` (and in `public/sample-resumes/`).

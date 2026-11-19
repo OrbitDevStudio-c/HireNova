@@ -107,6 +107,10 @@ export default function LandingPage() {
           Already have an account?{' '}
           <Link to="/auth/login" className="font-medium text-brand-600 hover:text-brand-700">
             Log in
+          </Link>{' '}
+          ·{' '}
+          <Link to="/live-demo" className="font-medium text-brand-600 hover:text-brand-700">
+            Try the live demo
           </Link>
         </p>
       </section>

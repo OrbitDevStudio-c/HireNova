@@ -19,7 +19,8 @@
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "db:seed": "prisma db seed",
-    "db:seed:demo-interviews": "node prisma/seed-demo-interviews.js"
+    "db:seed:demo-interviews": "node prisma/seed-demo-interviews.js",
+    "db:seed:demo": "node scripts/seed-hiring-demo.mjs"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
