@@ -1,0 +1,41 @@
+import { Router } from 'express';
+import * as controller from './admin.controller.js';
+import * as insights from './adminInsights.service.js';
+import { asyncHandler } from '../../utils/asyncHandler.js';
+import { ok } from '../../utils/apiResponse.js';
+import { authenticate, authorize } from '../../middleware/auth.js';
+import { validate } from '../../middleware/validate.js';
+import { ROLES } from '../../../shared/constants/roles.js';
+import {
+  adminCreateCompanySchema,
+  adminUpdateCompanySchema,
+  adminCompanyStatusSchema,
+  adminUserStatusSchema,
+} from '../../../shared/schemas/admin.schema.js';
+import { adminCompaniesQuerySchema, adminUsersQuerySchema } from '../../../shared/schemas/query.schema.js';
+
+// Build plan P1 — Platform Admin only. There is no public admin signup; the
+// first admin is created with scripts/create-admin.mjs.
+const router = Router();
+
+router.use(authenticate, authorize(ROLES.ADMIN));
+
+// Platform dashboard + student management.
+router.get('/stats', asyncHandler(async (req, res) => ok(res, await insights.getStats())));
+router.get(
+  '/students',
+  validate(adminUsersQuerySchema, 'query'),
+  asyncHandler(async (req, res) => ok(res, { students: await insights.listStudents(req.query) }))
+);
+
+router.get('/companies', validate(adminCompaniesQuerySchema, 'query'), controller.listCompanies);
+router.post('/companies', validate(adminCreateCompanySchema), controller.createCompany);
+router.get('/companies/:id', controller.getCompany);
+router.patch('/companies/:id', validate(adminUpdateCompanySchema), controller.updateCompany);
+router.patch('/companies/:id/status', validate(adminCompanyStatusSchema), controller.setCompanyStatus);
+router.post('/companies/:id/resend-invite', controller.resendInvite);
+
+router.get('/users', validate(adminUsersQuerySchema, 'query'), controller.listUsers);
+router.patch('/users/:id/status', validate(adminUserStatusSchema), controller.setUserStatus);
+
+export default router;

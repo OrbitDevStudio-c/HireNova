@@ -1,0 +1,94 @@
+import express from 'express';
+import cors from 'cors';
+import { env } from './config/env.js';
+import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
+
+import authRoutes from './modules/auth/auth.routes.js';
+import companiesRoutes from './modules/companies/companies.routes.js';
+import candidatesRoutes from './modules/candidates/candidates.routes.js';
+import educationRoutes from './modules/education/education.routes.js';
+import jobsRoutes from './modules/jobs/jobs.routes.js';
+import resumesRoutes from './modules/resumes/resumes.routes.js';
+import applicationsRoutes from './modules/applications/applications.routes.js';
+import screeningRoutes from './modules/screening/screening.routes.js';
+import schedulingRoutes from './modules/scheduling/scheduling.routes.js';
+import interviewsRoutes from './modules/interviews/interviews.routes.js';
+import adminRoutes from './modules/admin/admin.routes.js';
+import configRoutes from './modules/config/config.routes.js';
+import recruitersRoutes from './modules/recruiters/recruiters.routes.js';
+import clientsRoutes from './modules/clients/clients.routes.js';
+import publicRoutes from './modules/public/public.routes.js';
+import cvPoolRoutes from './modules/cvPool/cvPool.routes.js';
+import interviewLinkRoutes from './modules/interviews/interviewLink.routes.js';
+import submissionsRoutes, { publicSubmissionRoutes } from './modules/submissions/submissions.routes.js';
+import clientPortalRoutes from './modules/clientPortal/clientPortal.routes.js';
+import recqRoutes from './modules/recq/recq.routes.js';
+import jobFitRoutes from './modules/jobFit/jobFit.routes.js';
+
+export function createApp() {
+  const app = express();
+
+  // Auth is a stateless Bearer JWT (Section 5/21) — no cookies are ever
+  // set or read, so `credentials: true` (which governs cross-origin
+  // cookie/credential sharing) is intentionally omitted. CLIENT_URL can be
+  // a comma-separated list to allow more than one origin (e.g. a staging
+  // domain alongside production). In this single-Vercel-project
+  // architecture the deployed frontend and API always share one origin, so
+  // this mainly matters for local development and any future external
+  // client calling the API directly.
+  // Build plan P4: one proxy hop (Vercel / Vite dev proxy) so req.ip is the
+  // real client for the OTP per-IP limit. Nothing else reads req.ip.
+  app.set('trust proxy', 1);
+
+  const allowedOrigins = env.clientUrl.split(',').map((origin) => origin.trim());
+  app.use(cors({ origin: allowedOrigins }));
+  app.use(express.json({ limit: '2mb' }));
+  app.use(express.urlencoded({ extended: true }));
+
+  app.get('/api/health', (req, res) => {
+    res.json({ success: true, data: { status: 'ok', timestamp: new Date().toISOString() } });
+  });
+
+  // Versioned API (Section 15).
+  const v1 = express.Router();
+  v1.use('/auth', authRoutes);
+  v1.use('/companies', companiesRoutes);
+  v1.use('/candidates', candidatesRoutes);
+  v1.use('/candidates/me/education', educationRoutes);
+  v1.use('/jobs', jobsRoutes);
+  v1.use('/resumes', resumesRoutes);
+  v1.use('/applications', applicationsRoutes);
+  v1.use('/screening', screeningRoutes);
+  v1.use('/scheduling', schedulingRoutes);
+  v1.use('/interviews', interviewsRoutes);
+  // Build plan P1
+  v1.use('/admin', adminRoutes);
+  v1.use('/config', configRoutes);
+  // Build plan P2
+  v1.use('/recruiters', recruitersRoutes);
+  // Build plan P3
+  v1.use('/clients', clientsRoutes);
+  // Build plan P5 — mounted before /public so it isn't caught by the
+  // FEATURE_GUEST_APPLY gate (it has its own FEATURE_INSTANT_INTERVIEW gate).
+  v1.use('/public/interviews', interviewLinkRoutes);
+  // Build plan P7 — the HR person's read-only candidate link (always on:
+  // the plan's P7 email links must work before/without the P8 portal).
+  v1.use('/public/submissions', publicSubmissionRoutes);
+  v1.use('/submissions', submissionsRoutes);
+  // Build plan P8
+  v1.use('/client-portal', clientPortalRoutes);
+  // Build plan P4
+  v1.use('/public', publicRoutes);
+  v1.use('/cv-pool', cvPoolRoutes);
+  // Build plan P9 — /recq agency-link candidate flow (own FEATURE_RECQ gate).
+  v1.use('/recq', recqRoutes);
+  // Students: resume ↔ job fit preview.
+  v1.use('/job-fit', jobFitRoutes);
+
+  app.use('/api/v1', v1);
+
+  app.use(notFoundHandler);
+  app.use(errorHandler);
+
+  return app;
+}

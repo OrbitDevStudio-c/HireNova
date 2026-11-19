@@ -1,0 +1,119 @@
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { LogOut } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth.jsx';
+import { MEMBER_ROLE_LABELS } from '../../shared/constants/permissions.js';
+
+// e.g. "Acme Corp · HR", "Student", "Platform admin".
+function roleLine(user) {
+  if (!user) return '';
+  if (user.role === 'ADMIN') return 'Platform admin';
+  if (user.role === 'CANDIDATE') return 'Student';
+  if (user.role === 'COMPANY' || user.role === 'RECRUITER') {
+    const role = user.role === 'COMPANY' ? 'Admin' : MEMBER_ROLE_LABELS[user.membership?.role] || 'Team';
+    return [user.company?.name, role].filter(Boolean).join(' · ');
+  }
+  return '';
+}
+
+export default function DashboardLayout({ navItems }) {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/auth/login');
+  };
+
+  return (
+    <div className="flex min-h-screen bg-slate-50">
+      {/* Desktop sidebar */}
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white md:flex">
+        <div className="flex items-center gap-2 border-b border-slate-200 px-6 py-5">
+          <img src="/Logo.png" alt="RecruitIQ" className="h-9 w-9 object-contain" />
+          <span className="text-lg font-semibold text-slate-900">RecruitIQ</span>
+        </div>
+        <nav className="flex-1 space-y-1 px-3 py-4">
+          {navItems.map(({ to, label, icon: Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-100'
+                }`
+              }
+            >
+              <Icon className="h-4 w-4" />
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="border-t border-slate-200 p-3">
+          <div className="mb-2 px-3">
+            <p className="truncate text-xs font-medium text-slate-700">{roleLine(user)}</p>
+            <p className="truncate text-xs text-slate-500">{user?.email}</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+          >
+            <LogOut className="h-4 w-4" />
+            Log out
+          </button>
+        </div>
+      </aside>
+
+      {/* min-w-0: without it this flex item grows to its widest child (e.g. a
+          min-w table inside overflow-x-auto), so the whole page scrolls
+          sideways on phones instead of just the table. */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Mobile top bar */}
+        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-4 md:hidden">
+          <div className="flex min-w-0 items-center gap-2">
+            <img src="/Logo.png" alt="RecruitIQ" className="h-8 w-8 shrink-0 object-contain" />
+            <div className="min-w-0">
+              <span className="block text-base font-semibold leading-tight text-slate-900">RecruitIQ</span>
+              <span className="block truncate text-xs text-slate-500">{roleLine(user)}</span>
+            </div>
+          </div>
+          <button onClick={handleLogout} className="flex min-h-[44px] shrink-0 items-center gap-1 px-2 text-sm text-slate-600">
+            <LogOut className="h-4 w-4" />
+            Log out
+          </button>
+        </header>
+
+        {/* Bottom padding reserves space for the fixed mobile tab bar below */}
+        <main className="flex-1 px-4 py-6 pb-24 md:px-8 md:pb-6">
+          <Outlet />
+        </main>
+      </div>
+
+      {/* Mobile bottom tab bar — the only navigation on small screens */}
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-slate-200 bg-white md:hidden">
+        {navItems.map(({ to, label, icon: Icon, end }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={end}
+            // className={({ isActive }) =>
+            //   `flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium ${
+            //     isActive ? 'text-brand-600' : 'text-slate-500'
+            //   }`
+            // }
+            // Build plan P4: up to 5 tabs — min-w-0 + truncate keep 320px screens from overflowing.
+            className={({ isActive }) =>
+              `flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-xs font-medium ${
+                isActive ? 'text-brand-600' : 'text-slate-500'
+              }`
+            }
+          >
+            <Icon className="h-5 w-5 shrink-0" />
+            {/* {label} */}
+            <span className="w-full truncate text-center">{label}</span>
+          </NavLink>
+        ))}
+      </nav>
+    </div>
+  );
+}
