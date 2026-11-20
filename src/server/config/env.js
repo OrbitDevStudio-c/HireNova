@@ -154,7 +154,7 @@ export const env = {
     demoPage: flag('DEMO_PAGE', false),
   },
   // Password shared by the demo accounts (scripts/seed-demo.mjs).
-  demoPassword: (process.env.DEMO_PASSWORD || 'Demo@123').trim(),
+  demoPassword: (process.env.DEMO_PASSWORD || 'Demo@1234').trim(),
 };
 
 export const isProduction = isProd;

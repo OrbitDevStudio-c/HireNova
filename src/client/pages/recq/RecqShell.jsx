@@ -33,7 +33,7 @@ export default function RecqShell({ agency, agencySlug, children, narrow = false
       <footer className="pb-7 pt-2 text-center text-xs text-slate-400">
         Powered by{' '}
         <Link to="/" className="font-medium text-slate-500 hover:text-slate-700">
-          RecruitIQ
+          HireNova
         </Link>
       </footer>
     </div>

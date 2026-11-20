@@ -70,7 +70,7 @@ export function RegisterChooserPage() {
     },
   ];
   return (
-    <AuthShell title="Create your account" subtitle="Choose how you'll use RecruitIQ">
+    <AuthShell title="Create your account" subtitle="Choose how you'll use HireNova">
       <div className="space-y-3">
         {options.map(({ to, icon: Icon, title, text }) => (
           <Link

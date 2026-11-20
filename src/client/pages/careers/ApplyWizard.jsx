@@ -293,8 +293,8 @@ export default function ApplyWizard({ slug, company, job }) {
             />
             <span>
               {job
-                ? `I agree that ${company?.name || 'this company'} and RecruitIQ may process my CV and contact details, and use AI to assess my fit for this job.`
-                : `I agree that RecruitIQ may process my CV and contact details and use AI to match me to open jobs — including jobs at other companies hiring on RecruitIQ — and share my application with the company I'm matched to.`}
+                ? `I agree that ${company?.name || 'this company'} and HireNova may process my CV and contact details, and use AI to assess my fit for this job.`
+                : `I agree that HireNova may process my CV and contact details and use AI to match me to open jobs — including jobs at other companies hiring on HireNova — and share my application with the company I'm matched to.`}
             </span>
           </label>
           {fieldErrors.consent && (

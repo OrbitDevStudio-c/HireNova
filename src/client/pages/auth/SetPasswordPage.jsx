@@ -98,21 +98,21 @@ export default function SetPasswordPage() {
   const inviteSubtitle = !info.companyName
     ? 'Finish setting up your account'
     : info.role === 'RECRUITER'
-      ? `Join the ${info.companyName} hiring team on RecruitIQ`
+      ? `Join the ${info.companyName} hiring team on HireNova`
       : info.role === 'CLIENT_HR'
-        ? `Set up your Company HR access for ${info.companyName} on RecruitIQ`
-        : `Finish setting up ${info.companyName} on RecruitIQ`;
+        ? `Set up your Company HR access for ${info.companyName} on HireNova`
+        : `Finish setting up ${info.companyName} on HireNova`;
 
   return (
     <AuthShell
       // title="Set your password"
       title={isReset ? 'Reset your password' : 'Set your password'}
-      // subtitle={info.companyName ? `Finish setting up ${info.companyName} on RecruitIQ` : 'Finish setting up your account'}
+      // subtitle={info.companyName ? `Finish setting up ${info.companyName} on HireNova` : 'Finish setting up your account'}
       // subtitle={
       //   isReset
       //     ? 'Choose a new password for your account.'
       //     : info.companyName
-      //       ? `Finish setting up ${info.companyName} on RecruitIQ`
+      //       ? `Finish setting up ${info.companyName} on HireNova`
       //       : 'Finish setting up your account'
       // }
       subtitle={isReset ? 'Choose a new password for your account.' : inviteSubtitle}

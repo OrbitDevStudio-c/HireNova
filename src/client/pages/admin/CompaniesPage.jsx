@@ -41,7 +41,7 @@ export default function CompaniesPage() {
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">Companies</h2>
-          <p className="text-sm text-slate-500">Companies hiring on RecruitIQ</p>
+          <p className="text-sm text-slate-500">Companies hiring on HireNova</p>
         </div>
         <Link to="/admin/companies/new" className="sm:shrink-0">
           <Button className="w-full sm:w-auto">

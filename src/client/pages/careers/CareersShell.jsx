@@ -32,7 +32,7 @@ export default function CareersShell({ company, slug, children, narrow = false }
       <footer className="pb-8 text-center text-xs text-slate-400">
         Powered by{' '}
         <Link to="/" className="font-medium text-slate-500 hover:text-slate-700">
-          RecruitIQ
+          HireNova
         </Link>
       </footer>
     </div>

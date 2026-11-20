@@ -108,7 +108,7 @@ export default function StartHerePage() {
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Demo — start here</h1>
         <p className="mt-2 max-w-3xl text-slate-600">
-          Every RecruitIQ role and link in one place. Open each role in a separate browser window (or an incognito window) so the logins
+          Every HireNova role and link in one place. Open each role in a separate browser window (or an incognito window) so the logins
           don't replace each other.
         </p>
 
@@ -133,7 +133,7 @@ export default function StartHerePage() {
           </div>
         ) : (
           <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
-            Demo logins are switched off right now. Ask the RecruitIQ team for access.
+            Demo logins are switched off right now. Ask the HireNova team for access.
           </div>
         )}
 

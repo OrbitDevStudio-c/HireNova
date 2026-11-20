@@ -260,7 +260,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="border-t border-slate-100 py-8 text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} RecruitIQ · Crafted with skills by OrbitDevStudio in India
+        © {new Date().getFullYear()} HireNova · Crafted with skills by OrbitDevStudio in India
       </footer>
     </div>
   );

@@ -45,7 +45,7 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthShell title="Welcome back" subtitle="Log in to your RecruitIQ account">
+    <AuthShell title="Welcome back" subtitle="Log in to your HireNova account">
       <form onSubmit={handleSubmit} noValidate>
         <FormField label="Email" error={fieldErrors.email}>
           <input

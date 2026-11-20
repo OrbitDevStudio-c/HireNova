@@ -122,7 +122,7 @@ export default function AdminDashboardPage() {
     <div>
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-slate-900">Platform dashboard</h2>
-        <p className="text-sm text-slate-500">Companies, students and hiring activity across RecruitIQ</p>
+        <p className="text-sm text-slate-500">Companies, students and hiring activity across HireNova</p>
       </div>
 
       <div className="mb-6 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">

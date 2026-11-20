@@ -416,7 +416,7 @@ export default function CareersTrackPage() {
           <div>
             {account === 'existing' ? (
               <p>
-                You already have a RecruitIQ account with this email.{' '}
+                You already have a HireNova account with this email.{' '}
                 <Link to="/auth/login" className="font-medium text-brand-600 hover:underline">
                   Log in
                 </Link>{' '}

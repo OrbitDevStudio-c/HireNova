@@ -11,7 +11,7 @@ export const DEMO_COMPANY_NAME = 'Finlytics Software';
 // Shown on the public home page (requested): the seeded demo accounts and
 // their shared password. Only meaningful where scripts/seed-hiring-demo.mjs
 // was run with the default DEMO_PASSWORD — never real accounts.
-export const HOME_DEMO_PASSWORD = 'Demo@123';
+export const HOME_DEMO_PASSWORD = 'Demo@1234';
 export const HOME_DEMO_KEYS = ['admin', 'companyAdmin', 'hr', 'employee', 'student'];
 
 // Sample resumes served from /public/sample-resumes (fictional people).
