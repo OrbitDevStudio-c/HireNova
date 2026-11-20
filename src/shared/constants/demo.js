@@ -2,11 +2,17 @@
 // also run by scripts/seed-demo.mjs). Direct-hiring model: Platform Admin,
 // companies with Admin / HR / Employee, and students. Fixed accounts on
 // non-routable .demo domains, so no real inbox ever receives their emails.
-// The password is never stored here: it comes from DEMO_PASSWORD on the
-// server and is only shown while DEMO_PAGE is on.
+// /live-demo reads the password from DEMO_PASSWORD on the server (shown only
+// while DEMO_PAGE is on); the home page shows HOME_DEMO_PASSWORD below.
 
 export const DEMO_EMAIL_DOMAINS = ['platform.demo', 'finlytics.demo', 'medivance.demo', 'greengrid.demo', 'students.demo'];
 export const DEMO_COMPANY_NAME = 'Finlytics Software';
+
+// Shown on the public home page (requested): the seeded demo accounts and
+// their shared password. Only meaningful where scripts/seed-hiring-demo.mjs
+// was run with the default DEMO_PASSWORD — never real accounts.
+export const HOME_DEMO_PASSWORD = 'Demo@123';
+export const HOME_DEMO_KEYS = ['admin', 'companyAdmin', 'hr', 'employee', 'student'];
 
 // Sample resumes served from /public/sample-resumes (fictional people).
 export const DEMO_SAMPLE_RESUMES = [
