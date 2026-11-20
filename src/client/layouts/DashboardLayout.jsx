@@ -29,8 +29,8 @@ export default function DashboardLayout({ navItems }) {
       {/* Desktop sidebar */}
       <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white md:flex">
         <div className="flex items-center gap-2 border-b border-slate-200 px-6 py-5">
-          <img src="/Logo.png" alt="RecruitIQ" className="h-9 w-9 object-contain" />
-          <span className="text-lg font-semibold text-slate-900">RecruitIQ</span>
+          <img src="/logo-mark.png" alt="HireNova" className="h-9 w-auto object-contain" />
+          <span className="text-lg font-semibold text-slate-900">HireNova</span>
         </div>
         <nav className="flex-1 space-y-1 px-3 py-4">
           {navItems.map(({ to, label, icon: Icon, end }) => (
@@ -71,9 +71,9 @@ export default function DashboardLayout({ navItems }) {
         {/* Mobile top bar */}
         <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-4 md:hidden">
           <div className="flex min-w-0 items-center gap-2">
-            <img src="/Logo.png" alt="RecruitIQ" className="h-8 w-8 shrink-0 object-contain" />
+            <img src="/logo-mark.png" alt="HireNova" className="h-8 w-auto shrink-0 object-contain" />
             <div className="min-w-0">
-              <span className="block text-base font-semibold leading-tight text-slate-900">RecruitIQ</span>
+              <span className="block text-base font-semibold leading-tight text-slate-900">HireNova</span>
               <span className="block truncate text-xs text-slate-500">{roleLine(user)}</span>
             </div>
           </div>

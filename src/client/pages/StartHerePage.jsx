@@ -93,8 +93,8 @@ export default function StartHerePage() {
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/Logo.png" alt="RecruitIQ" className="h-9 w-9 object-contain" />
-            <span className="text-lg font-semibold text-slate-900">RecruitIQ</span>
+            <img src="/logo-mark.png" alt="HireNova" className="h-9 w-auto object-contain" />
+            <span className="text-lg font-semibold text-slate-900">HireNova</span>
           </Link>
           <Link
             to="/auth/login"

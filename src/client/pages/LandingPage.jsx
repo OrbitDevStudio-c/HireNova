@@ -159,8 +159,8 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white">
       <header className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-5 sm:px-6">
         <div className="flex shrink-0 items-center gap-2">
-          <img src="/Logo.png" alt="RecruitIQ" className="h-10 w-10 shrink-0 object-contain" />
-          <span className="hidden text-lg font-semibold sm:inline">RecruitIQ</span>
+          <img src="/logo-mark.png" alt="HireNova" className="h-10 w-auto shrink-0 object-contain" />
+          <span className="hidden text-lg font-semibold sm:inline">HireNova</span>
         </div>
         <div className="flex shrink-0 items-center gap-1 sm:gap-3">
           <Link

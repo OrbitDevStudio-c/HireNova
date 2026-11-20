@@ -1,4 +1,6 @@
-# RecruitIQ — AI Hiring Platform
+# HireNova — AI Hiring Platform
+
+> *Smarter Hiring. Brighter Futures.*
 
 An AI-powered hiring platform with three sides:
 
@@ -269,11 +271,12 @@ Everything else has a safe default — see the comments in `.env.example`:
 | Group | Variables |
 | ----- | --------- |
 | Server / storage | `PORT`, `CLIENT_URL`, `STORAGE_DRIVER`, `UPLOAD_DIR`, `MAX_RESUME_SIZE_MB` |
-| Email | `BREVO_API_KEY`, `BREVO_FROM_EMAIL`, `BREVO_FROM_NAME`, `EMAIL_PROVIDER` |
+| Email | `BREVO_API_KEY`, `BREVO_FROM_EMAIL` / `BREVO_FROM_NAME` (`BREVO_SENDER_EMAIL` / `BREVO_SENDER_NAME` also accepted), `EMAIL_PROVIDER` (`brevo` or `console`; any other value falls back to Brevo when `BREVO_API_KEY` is set, otherwise `console`) |
 | AI voice interviews | `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `INTERVIEW_WORKER_SECRET`, `DEEPGRAM_API_KEY` |
 | SMS OTP | `SMS_DRIVER` (`console` / `twilio`), `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`, `DEFAULT_PHONE_COUNTRY_CODE` (`+91`) |
 | Feature flags | `ALLOW_COMPANY_SELF_REGISTER`, `FEATURE_CANDIDATE_JOB_BOARD` (both default `true`), `FEATURE_GUEST_APPLY`, `FEATURE_INSTANT_INTERVIEW`, `FEATURE_CLIENT_PORTAL` (default `false`) |
 | Demo page | `DEMO_PAGE` (default `false`), `DEMO_PASSWORD` (default `Demo@123`) |
+| Testing only | `OTP_TEST_CODE` — a code that always passes OTP verification. **Never set in production.** |
 
 Feature flags accept `true`/`false` (also `1`/`0`, `yes`/`no`, `on`/`off`). Companies register
 themselves and students browse every company's jobs by default; set `ALLOW_COMPANY_SELF_REGISTER=false`
@@ -328,7 +331,7 @@ npm run dev                 # client on :5173, API on :3001, proxied together
 No local Postgres install needed — Docker works:
 
 ```bash
-docker run -d --name recruitiq-pg -e POSTGRES_PASSWORD=recruitiq -e POSTGRES_DB=recruitiq -p 5432:5432 postgres:16-alpine
+docker run -d --name hirenova-pg -e POSTGRES_PASSWORD=hirenova -e POSTGRES_DB=hirenova -p 5432:5432 postgres:16-alpine
 ```
 
 Or use a hosted provider directly (this project runs on **Neon** — see `.env.example` for its pooled
@@ -389,9 +392,10 @@ it recreates the same demo accounts (all sharing password `Demo@1234`) each time
    `OPENROUTER_SITE_URL` can stay unset — they fall back to the deployment's own URL.
 3. Run `npx prisma migrate deploy` against the production database (locally or in CI) — Vercel's build runs
    `prisma generate` but never runs migrations.
-4. Create the Portal Admin with `scripts/create-admin.mjs` against the production database.
-5. `MAX_RESUME_SIZE_MB` defaults to 4 because Vercel's Node functions reject bodies above ~4.5 MB.
-6. For AI voice interviews, also set the `LIVEKIT_*` values and `INTERVIEW_WORKER_SECRET`, and deploy
+4. **Production checklist:** leave `OTP_TEST_CODE` unset, set `DEMO_PAGE=false`, set `PUBLIC_APP_URL` to your real domain (it is used in every emailed link), and use a strong `JWT_SECRET`.
+5. Create the Platform Admin with `scripts/create-admin.mjs` against the production database.
+6. `MAX_RESUME_SIZE_MB` defaults to 4 because Vercel's Node functions reject bodies above ~4.5 MB.
+7. For AI voice interviews, also set the `LIVEKIT_*` values and `INTERVIEW_WORKER_SECRET`, and deploy
    `livekit-worker/` separately — see `livekit-worker/README.md`.
 
 ## API structure
@@ -476,3 +480,10 @@ needs a browser and microphone — see `livekit-worker/README.md`.
   (see [Database notes](#database-notes)).
 - Video recording — deliberately never implemented, by design.
 - Swapping Deepgram for another STT/TTS provider means changing `livekit-worker/src/deepgram.js` only.
+
+## Branding
+
+The logo lives in `public/`: `Logo.png` (full-size master artwork, not loaded by the app),
+`logo-mark.png` (compact mark used in headers, sidebar and auth pages), `logo-full.png` (cropped
+wordmark with tagline, for sharing) and `favicon.png` (browser tab icon). Replace `Logo.png` and
+regenerate the cropped versions if the artwork changes.

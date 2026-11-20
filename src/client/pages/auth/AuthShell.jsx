@@ -6,8 +6,8 @@ export default function AuthShell({ title, subtitle, children }) {
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
       <div className="w-full max-w-md">
         <Link to="/" className="mb-6 flex items-center justify-center gap-2">
-          <img src="/Logo.png" alt="RecruitIQ" className="h-12 w-12 object-contain" />
-          <span className="text-lg font-semibold text-slate-900">RecruitIQ</span>
+          <img src="/logo-mark.png" alt="HireNova" className="h-12 w-auto object-contain" />
+          <span className="text-lg font-semibold text-slate-900">HireNova</span>
         </Link>
         <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
           <Link to="/" className="mb-4 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700">

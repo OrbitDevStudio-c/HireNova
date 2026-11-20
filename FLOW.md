@@ -1,13 +1,13 @@
-# RecruitIQ — System Flow
+# HireNova — System Flow
 
-How RecruitIQ works from start to finish: who uses it, what each person does, and what the system does
+How HireNova works from start to finish: who uses it, what each person does, and what the system does
 automatically at each step. For setup, code structure and API details, see [README.md](README.md).
 
 ---
 
 ## 1. The big picture
 
-RecruitIQ connects **companies** that are hiring with **students** looking for jobs. A **Platform Admin**
+HireNova connects **companies** that are hiring with **students** looking for jobs. A **Platform Admin**
 runs the platform.
 
 ```mermaid
