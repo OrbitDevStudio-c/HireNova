@@ -92,8 +92,8 @@ export const env = {
   // required: the email driver falls back to logging instead of sending
   // when BREVO_API_KEY is unset, so nothing crashes without it configured.
   brevoApiKey: process.env.BREVO_API_KEY || '',
-  brevoFromEmail: process.env.BREVO_FROM_EMAIL || '',
-  brevoFromName: process.env.BREVO_FROM_NAME || 'RecruitIQ',
+  brevoFromEmail: process.env.BREVO_FROM_EMAIL || process.env.BREVO_SENDER_EMAIL || '',
+  brevoFromName: process.env.BREVO_FROM_NAME || process.env.BREVO_SENDER_NAME || 'RecruitIQ',
 
   // Phase 3 — AI voice interviews. This Vercel app only ever generates
   // LiveKit access tokens (livekit.service.js) — it never joins a room or

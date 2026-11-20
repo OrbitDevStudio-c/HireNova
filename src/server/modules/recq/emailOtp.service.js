@@ -22,7 +22,7 @@ const IP_LIMIT = { count: 10, windowMs: 60 * 60 * 1000 };
 
 // The email driver logs instead of sending when Brevo isn't configured; only
 // then (and never in production) do we expose the code to the page for dev.
-const emailProvider = process.env.EMAIL_PROVIDER || (env.brevoApiKey ? 'brevo' : 'console');
+const emailProvider = ['brevo', 'console'].includes(process.env.EMAIL_PROVIDER) ? process.env.EMAIL_PROVIDER : (env.brevoApiKey ? 'brevo' : 'console');
 const EMAIL_IS_CONSOLE = emailProvider === 'console';
 
 const tooMany = (message) => new ApiError(429, 'OTP_RATE_LIMITED', message);

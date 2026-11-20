@@ -10,7 +10,8 @@ import { env } from '../../../config/env.js';
 // configuration — it just logs instead of sending.
 const drivers = { brevo: brevoDriver, console: consoleDriver };
 
-const driverName = process.env.EMAIL_PROVIDER || (env.brevoApiKey ? 'brevo' : 'console');
+const requested = process.env.EMAIL_PROVIDER;
+const driverName = drivers[requested] ? requested : (env.brevoApiKey ? 'brevo' : 'console');
 const driver = drivers[driverName] || consoleDriver;
 
 export const emailDriver = {
