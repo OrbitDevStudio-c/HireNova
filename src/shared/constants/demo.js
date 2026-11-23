@@ -30,13 +30,6 @@ export const DEMO_SAMPLE_RESUMES = [
 
 export const DEMO_ACCOUNTS = [
   {
-    key: 'admin',
-    role: 'ADMIN',
-    label: 'Platform admin',
-    email: 'admin@platform.demo',
-    canDo: ['Platform dashboard: growth, booming fields, in-demand skills', 'Suspend or reactivate companies', 'Activate / deactivate students'],
-  },
-  {
     key: 'companyAdmin',
     role: 'COMPANY',
     label: 'Company admin',

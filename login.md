@@ -10,7 +10,6 @@ Created by `npm run db:seed:demo` (`scripts/seed-hiring-demo.mjs`). All accounts
 
 | Role | Email | Lands on | What to try |
 | --- | --- | --- | --- |
-| Platform admin | `admin@platform.demo` | `/admin/dashboard` | Dashboard trends and booming fields; Students → deactivate one |
 | Company admin — Finlytics Software (Fintech) | `admin@finlytics.demo` | `/company/dashboard` | Team → edit permissions, switch HR ↔ Employee; delete a job with no applicants |
 | HR — Finlytics | `hr@finlytics.demo` | `/company/dashboard` | Create / edit jobs, review applicants — no Delete button |
 | HR (review only) — Finlytics | `hr2@finlytics.demo` | `/company/dashboard` | Can review applicants but not create or edit jobs |

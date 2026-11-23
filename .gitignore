@@ -3,8 +3,6 @@ dist
 build
 .vercel
 
-.env
-.env.*
 !.env.example
 
 *.log
@@ -31,3 +29,4 @@ video-production/*
 video-production/final/*
 !video-production/final/HireNova-Product-Demo.mp4
 !video-production/final/HireNova-YouTube-Thumbnail.png
+config.bat

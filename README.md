@@ -294,7 +294,6 @@ do, its login, sign-up links and sample resumes. Demo accounts live on non-routa
 
 | Account | Email |
 | ------- | ----- |
-| Platform admin | `admin@platform.demo` |
 | Company admin (Finlytics Software) | `admin@finlytics.demo` |
 | HR (Finlytics) | `hr@finlytics.demo` |
 | Employee (Finlytics, read only) | `employee@finlytics.demo` |
